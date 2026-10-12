@@ -473,10 +473,34 @@
           <h3 id="using">Using Notebble</h3>
 
           <article class="qa qa--safety" id="not-medical">
-            <h4>Can I use Notebble for medication, health, or other critical reminders?</h4>
+            <h4 class="qa__title--icon">
+              <!-- Material Icons "gpp_maybe" (shield with exclamation mark). -->
+              <svg
+                class="qa__icon qa__icon--warning"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 2 4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"
+                />
+              </svg>
+              <span data-lang="en" lang="en">Can I use Notebble for medication, health, or other critical reminders?</span>
+              <span data-lang="uk" lang="uk" hidden>Чи можна використовувати Notebble для нагадувань про ліки, здоров’я чи інші критично важливі справи?</span>
+            </h4>
             <!-- Mirrors the "Before you start" dialog in the iOS app. Keep the copy identical. -->
             <div class="safety-notice">
-              <div class="safety-notice__body">
+              <div class="lang-switch" role="group" aria-label="Notice language">
+                <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="true">
+                  English
+                </button>
+                <button type="button" class="lang-switch__btn" data-lang="uk" lang="uk" aria-pressed="false">
+                  Українська
+                </button>
+              </div>
+              <div class="safety-notice__body" data-lang="en" lang="en">
                 <p>
                   <strong>No.</strong> Notebble is a general productivity app. It is
                   <strong>not a medical device</strong> and is not designed for
@@ -512,6 +536,46 @@
                   <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a>,
                   and acknowledge the
                   <a href="privacy_policy.html">Privacy Policy</a>.
+                </p>
+              </div>
+              <div class="safety-notice__body" data-lang="uk" lang="uk" hidden>
+                <p>
+                  <strong>Ні.</strong> Notebble — це звичайний застосунок для продуктивності. Він
+                  <strong>не є медичним виробом</strong> і не призначений для
+                  цілей, пов’язаних зі здоров’ям, безпекою чи іншими критично
+                  важливими завданнями.
+                </p>
+                <ul class="safety-notice__list">
+                  <li>
+                    <span
+                      >Нагадування надсилає ваш пристрій, і вони
+                      <strong>можуть надходити із запізненням, дублюватися або не надходити взагалі</strong>.</span
+                    >
+                  </li>
+                  <li>
+                    <span
+                      >Нотатки зберігаються лише на цьому пристрої, без резервної
+                      копії, і <strong>можуть бути втрачені</strong>, наприклад,
+                      якщо ви видалите застосунок або загубите телефон.</span
+                    >
+                  </li>
+                </ul>
+                <p class="safety-notice__box">
+                  Notebble
+                  <strong>не можна використовувати для нагадувань чи нотаток про ліки, візити до лікаря або будь-що інше, пов’язане зі здоров’ям</strong>,
+                  а також для будь-яких цілей, коли пропущене нагадування чи
+                  втрачена нотатка може зашкодити вам або іншим людям. Завжди
+                  майте інший спосіб пам’ятати про важливе.
+                </p>
+                <p>
+                  Це повідомлення показується в застосунку Notebble перед першим
+                  використанням. Щоб користуватися застосунком, ви маєте прийняти
+                  його, натиснувши й утримуючи «Я розумію». Це також означає, що
+                  ви погоджуєтеся використовувати застосунок
+                  <strong>на власний ризик</strong>, погоджуєтеся з
+                  <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Умовами використання</a>
+                  та підтверджуєте, що ознайомилися з
+                  <a href="privacy_policy.html">Політикою конфіденційності</a>.
                 </p>
               </div>
             </div>
@@ -714,6 +778,46 @@
         window.addEventListener("scroll", schedule, { passive: true });
         window.addEventListener("resize", schedule);
         update();
+      })();
+
+      // Language switch for the safety notice. Defaults to Ukrainian when the
+      // browser prefers it; the reader's explicit choice is remembered.
+      (function () {
+        const notice = document.querySelector(".qa--safety");
+        if (!notice) return;
+        const buttons = Array.from(notice.querySelectorAll(".lang-switch__btn"));
+        const bodies = Array.from(
+          notice.querySelectorAll("[data-lang]:not(.lang-switch__btn)"),
+        );
+        const KEY = "notebble.safetyNoticeLang";
+        const supported = buttons.map((b) => b.dataset.lang);
+        const apply = (lang) => {
+          buttons.forEach((b) =>
+            b.setAttribute("aria-pressed", String(b.dataset.lang === lang)),
+          );
+          bodies.forEach((body) => {
+            body.hidden = body.dataset.lang !== lang;
+          });
+        };
+        let initial = null;
+        try {
+          initial = localStorage.getItem(KEY);
+        } catch (e) {}
+        if (!supported.includes(initial)) {
+          const prefersUk = (navigator.languages || [navigator.language]).some(
+            (l) => /^uk\b/i.test(l || ""),
+          );
+          initial = prefersUk ? "uk" : "en";
+        }
+        apply(initial);
+        buttons.forEach((b) =>
+          b.addEventListener("click", () => {
+            apply(b.dataset.lang);
+            try {
+              localStorage.setItem(KEY, b.dataset.lang);
+            } catch (e) {}
+          }),
+        );
       })();
     </script>
 

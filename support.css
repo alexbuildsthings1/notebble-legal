@@ -516,6 +516,18 @@ img {
     inset 0 0 0 2px var(--primary),
     var(--card-shadow);
 }
+.qa .qa__title--icon {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.qa__icon {
+  flex-shrink: 0;
+  margin-top: 1px; /* centre the 24px icon on the 25–26px first line */
+}
+.qa__icon--warning {
+  color: var(--tint-amber-fg);
+}
 .qa .safety-notice {
   font-family: "Plus Jakarta Sans", sans-serif;
   overflow-wrap: anywhere;
@@ -563,6 +575,37 @@ img {
 }
 .qa .safety-notice__body a {
   text-decoration: underline;
+}
+
+/* Language switch above the notice (segmented control). */
+.lang-switch {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+}
+.lang-switch__btn {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--text-2);
+  cursor: pointer;
+}
+.lang-switch__btn:hover {
+  color: var(--text);
+}
+.lang-switch__btn[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .steps {
